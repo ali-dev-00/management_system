@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,15 @@ Route::middleware('auth')->group(function () {
     Route::post('departments/create',[DepartmentController::class,'add_department'])->name('add_department');
     Route::put('departments/update/{id}',[DepartmentController::class,'update_department'])->name('update_department');
     Route::delete('departments/delete/{id}',[DepartmentController::class,'delete_department'])->name('delete_department');
+
+
+    //employees
+    Route::get('employees',[EmployeeController::class,'employees_list'])->name('employees_list');
+    Route::get('employees/create',[EmployeeController::class,'create_employee'])->name('create_employee');
+    Route::get('employees/update/{id}',[EmployeeController::class,'update_employee'])->name('update_employee');
+    Route::post('employees/create',[EmployeeController::class,'create_employee_form'])->name('create_employee_form');
+    // Route::put('employees/update/{id}',[EmployeeController::class,'update_department'])->name('update_department');
+    // Route::delete('employees/delete/{id}',[EmployeeController::class,'delete_department'])->name('delete_department');
 });
 
 require __DIR__.'/auth.php';
