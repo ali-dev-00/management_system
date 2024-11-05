@@ -20,16 +20,16 @@
                         <thead>
                             <tr>
                                 <th
-                                    class="px-6 py-3 text-left text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                    class="px-6 py-3 text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
                                     ID</th>
                                 <th
-                                    class="px-6 py-3 text-left text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                    class="px-6 py-3 text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
                                     Name</th>
                                 <th
-                                    class="px-6 py-3 text-left text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                    class="px-6 py-3 text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
                                     Status</th>
                                 <th
-                                    class="px-6 py-3 text-left text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                    class="px-6 py-3 text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
                                     Actions</th>
                             </tr>
                         </thead>
@@ -64,7 +64,7 @@
 
     <!-- Create Department Modal -->
     <div id="createDepartmentModal"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        class="flex fixed inset-0 bg-black bg-opacity-50  items-center justify-center hidden">
         <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-1/3">
             <h2 class="text-lg dark:text-white font-semibold">Create Department</h2>
             <form action="{{ route('add_department') }}" method="POST">
@@ -84,7 +84,7 @@
         </div>
     </div>
 
-    =
+    
     <div id="updateDepartmentModal"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white  dark:bg-gray-800 rounded-lg p-6 w-1/3">

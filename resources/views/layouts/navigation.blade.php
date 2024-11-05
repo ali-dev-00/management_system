@@ -22,6 +22,10 @@
                     <x-nav-link :href="route('employees_list')" :active="request()->routeIs('employees_list')">
                         {{ __('Employees') }}
                     </x-nav-link>
+                    @else
+                    <x-nav-link :href="route('attendance_history')" :active="request()->routeIs('attendance_history')">
+                        {{ __('History') }}
+                    </x-nav-link>
                     @endif
 
                 </div>
