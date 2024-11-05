@@ -10,7 +10,7 @@ class DocumentController extends Controller
 {
     public function document_list(){
         $user = Auth::user()->id;
-        $documents =  Document::where('user_id', $user)->get();
+        $documents =  Document::with('user')->where('user_id', $user)->get();
         return view('documents.documents_list', compact('documents'));
     }
 

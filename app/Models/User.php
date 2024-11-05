@@ -48,4 +48,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Attendance::class);
     }
+    public function tasksAssigned()
+    {
+        return $this->hasMany(Task::class, 'assigned_by');
+    }
+
+    public function tasksAssignedTo()
+    {
+        return $this->hasMany(Task::class, 'assigned_to');
+    }
 }
