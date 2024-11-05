@@ -1,5 +1,4 @@
 <x-app-layout>
-
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -16,47 +15,45 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table id="departmentsTable" class="min-w-full divide-y divide-gray-700">
+                    <table id="departmentsTable" class="w-full divide-y divide-gray-700">
                         <thead>
                             <tr>
-                                <th
-                                    class="px-6 py-3 text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     ID</th>
-                                <th
-                                    class="px-6 py-3 text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Name</th>
-                                <th
-                                    class="px-6 py-3 text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Status</th>
-                                <th
-                                    class="px-6 py-3 text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ">
                                     Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700">
                             @foreach ($departments as $department)
-                                <tr class="text-center">
+                                <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $department->id }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $department->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         {{ $department->status ? 'Active' : 'Inactive' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <button
-                                            onclick="openUpdateModal({{ $department->id }}, '{{ $department->name }}', {{ $department->status }})"
-                                            class="text-blue-600 hover:text-blue-900">Update</button>
-                                        <form action="{{ route('delete_department', $department->id) }}" method="POST"
-                                            class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="text-red-600 hover:text-red-900">Delete</button>
-                                        </form>
-                                    </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <button
+                                                onclick="openUpdateModal({{ $department->id }}, '{{ $department->name }}', {{ $department->status }})"
+                                                class="text-blue-600 hover:text-blue-900">
+                                                <i class="fa-solid fa-pen-to-square"></i> <!-- Update icon -->
+                                            </button>
+                                            <form action="{{ route('delete_department', $department->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-900 ms-4">
+                                                    <i class="fa-solid fa-trash"></i> <!-- Delete icon -->
+                                                </button>
+                                            </form>
+                                        </td>
+
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>
@@ -84,7 +81,7 @@
         </div>
     </div>
 
-    
+
     <div id="updateDepartmentModal"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white  dark:bg-gray-800 rounded-lg p-6 w-1/3">
@@ -118,14 +115,25 @@
         </div>
     </div>
 
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+        <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#departmentsTable').DataTable({
+                    responsive: true,
 
-    <script>
-        function openUpdateModal(id, name, status) {
-            document.getElementById('updateDepartmentModal').classList.remove('hidden');
-            document.getElementById('updateName').value = name;
-            document.getElementById('updateDepartmentId').value = id;
-            document.getElementById('updateStatus').value = status;
-            document.getElementById('updateDepartmentForm').action = `/departments/update/${id}`;
-        }
-    </script>
+                });
+            });
+
+            function openUpdateModal(id, name, status) {
+                document.getElementById('updateDepartmentModal').classList.remove('hidden');
+                document.getElementById('updateName').value = name;
+                document.getElementById('updateDepartmentId').value = id;
+                document.getElementById('updateStatus').value = status;
+                document.getElementById('updateDepartmentForm').action = `/departments/update/${id}`;
+            }
+        </script>
+    @endpush
 </x-app-layout>

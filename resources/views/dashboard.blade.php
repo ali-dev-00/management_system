@@ -13,7 +13,7 @@
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-4 items-center flex justify-between text-gray-900 dark:text-gray-100">
                         <div>
-                            Welcome , {{ Auth::user()->name  ?? 'Employee'}} 👋😊
+                            Welcome , {{ Auth::user()->name ?? 'Employee' }} 👋😊
                         </div>
                         <div class="text-center">
                             @if ($attendance && !$attendance->punch_out)
@@ -67,44 +67,45 @@
         </div>
     @endif
 
-    <script>
-        function openPunchModal(type) {
-            const modalTitle = document.getElementById('modalTitle');
-            const currentTime = document.getElementById('currentTime');
-            const punchModal = document.getElementById('punchModal');
-            modalTitle.innerText = type === 'in' ? 'Punch In' : 'Punch Out';
-            currentTime.innerText = new Date().toLocaleString();
-            punchModal.classList.remove('hidden');
-        }
+    @push('scripts')
+        <script>
+            function openPunchModal(type) {
+                const modalTitle = document.getElementById('modalTitle');
+                const currentTime = document.getElementById('currentTime');
+                const punchModal = document.getElementById('punchModal');
+                modalTitle.innerText = type === 'in' ? 'Punch In' : 'Punch Out';
+                currentTime.innerText = new Date().toLocaleString();
+                punchModal.classList.remove('hidden');
+            }
 
-        function closePunchModal() {
-            document.getElementById('punchModal').classList.add('hidden');
-        }
+            function closePunchModal() {
+                document.getElementById('punchModal').classList.add('hidden');
+            }
 
-        function submitPunch() {
-            const description = document.getElementById('description').value;
-            const modalTitle = document.getElementById('modalTitle').innerText;
-            const punchType = modalTitle === 'Punch In' ? 'in' : 'out';
+            function submitPunch() {
+                const description = document.getElementById('description').value;
+                const modalTitle = document.getElementById('modalTitle').innerText;
+                const punchType = modalTitle === 'Punch In' ? 'in' : 'out';
 
-            fetch("{{ route('attendance.punch') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                    },
-                    body: JSON.stringify({
-                        description,
-                        type: punchType
+                fetch("{{ route('attendance.punch') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            description,
+                            type: punchType
+                        })
                     })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    closePunchModal();
-                    window.location.reload();
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    </script>
-
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        closePunchModal();
+                        window.location.reload();
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        </script>
+    @endpush
 </x-app-layout>
