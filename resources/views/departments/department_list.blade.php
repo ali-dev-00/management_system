@@ -19,26 +19,37 @@
                     <table id="departmentsTable" class="min-w-full divide-y divide-gray-700">
                         <thead>
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                    ID</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                    Name</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                    Status</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700">
                             @foreach ($departments as $department)
-                                <tr>
+                                <tr class="text-center">
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $department->id }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $department->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         {{ $department->status ? 'Active' : 'Inactive' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <button onclick="openUpdateModal({{ $department->id }}, '{{ $department->name }}', {{ $department->status }})"
+                                        <button
+                                            onclick="openUpdateModal({{ $department->id }}, '{{ $department->name }}', {{ $department->status }})"
                                             class="text-blue-600 hover:text-blue-900">Update</button>
-                                        <form action="{{ route('delete_department', $department->id) }}" method="POST" class="inline">
+                                        <form action="{{ route('delete_department', $department->id) }}" method="POST"
+                                            class="inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                            <button type="submit"
+                                                class="text-red-600 hover:text-red-900">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
