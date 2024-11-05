@@ -61,7 +61,8 @@
                                             <button type="submit"
                                                 class="text-red-600 hover:text-red-900">Delete</button>
                                         </form>
-                                        <a href="{{ route('view_attendance_history', $employee->user_id) }}" class="text-indigo-600 hover:text-indigo-900">View More</a>
+                                        <a href="{{ route('view_attendance_history', $employee->user_id) }}" class="text-indigo-600 hover:text-indigo-900">View Attendance</a>
+                                        <a href="{{ route('documents_history', $employee->user_id) }}" class="text-indigo-600 hover:text-indigo-900">View Documents</a>
                                     </td>
                                 </tr>
                             @endforeach

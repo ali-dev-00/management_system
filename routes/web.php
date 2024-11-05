@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,12 @@ Route::middleware('auth')->group(function () {
     Route::put('departments/update/{id}', [DepartmentController::class, 'update_department'])->name('update_department');
     Route::delete('departments/delete/{id}', [DepartmentController::class, 'delete_department'])->name('delete_department');
 
+    //documents
+    Route::get('documents', [DocumentController::class, 'document_list'])->name('document_list');
+    Route::post('documents/create', [DocumentController::class, 'add_document'])->name('add_document');
+    Route::put('documents/update/{id}', [DocumentController::class, 'update_document'])->name('update_document');
+    Route::delete('documents/delete/{id}', [DocumentController::class, 'delete_document'])->name('delete_document');
+
 
     //employees
     Route::get('employees', [EmployeeController::class, 'employees_list'])->name('employees_list');
@@ -47,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('employees/delete/{id}', [EmployeeController::class, 'delete_employee'])->name('delete_employee');
 
     Route::get('/employee/attendance/{user_id}',[EmployeeController::class,'view_attendance_history'])->name('view_attendance_history');
+    Route::get('/employee/documents/{user_id}',[EmployeeController::class,'documents_history'])->name('documents_history');
 });
 
 require __DIR__ . '/auth.php';

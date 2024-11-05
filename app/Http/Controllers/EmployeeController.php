@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\Department;
+use App\Models\Document;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 use function PHPUnit\Framework\throwException;
@@ -102,5 +104,12 @@ class EmployeeController extends Controller
         $attendanceHistory = Attendance::where('user_id', $user_id)->get();
 
         return view('attendance.history', compact('attendanceHistory'));
+    }
+    public function documents_history($user_id)
+    {
+
+        $documents = Document::where('user_id', $user_id)->get();
+
+        return view('documents.documents_list', compact('documents'));
     }
 }

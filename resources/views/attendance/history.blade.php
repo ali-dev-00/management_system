@@ -12,7 +12,7 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <h3 class="font-semibold text-lg mb-4">Attendance History
                         @if (Auth::user()->role === "admin" && $attendanceHistory->count() > 0)
-                        for <span class="text-capitalize text-gray-400">{{ $attendanceHistory->first()->user->name ?? '' }}</span>
+                        of <span class="text-capitalize text-gray-400">{{ $attendanceHistory->first()->user->name ?? '' }}</span>
                     @endif
                     </h3>
 

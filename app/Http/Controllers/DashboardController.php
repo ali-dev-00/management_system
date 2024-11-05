@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\Document;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,11 +12,11 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        $user = Auth::user()->id;
         $today = Carbon::today();
 
         // Get today's attendance record for the user
-        $attendance = Attendance::where('user_id', $user->id)
+        $attendance = Attendance::where('user_id', $user)
             ->whereDate('punch_in', $today)
             ->first();
 
@@ -56,11 +57,12 @@ class DashboardController extends Controller
     public function attendance_history()
     {
         $userId = Auth::id(); // Get the logged-in user's ID
-        $attendanceHistory = Attendance::where('user_id', $userId) // Filter by user_id
-                                        ->orderBy('punch_in', 'desc') // Order by punch_in date
+        $attendanceHistory = Attendance::where('user_id', $userId)
+                                        ->orderBy('punch_in', 'desc')
                                         ->get();
 
         return view('attendance.history', compact('attendanceHistory'));
     }
+
 
 }
