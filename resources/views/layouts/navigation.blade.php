@@ -22,6 +22,19 @@
                     <x-nav-link :href="route('employees_list')" :active="request()->routeIs('employees_list')">
                         {{ __('Employees') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('project_list')" :active="request()->routeIs('project_list')">
+                        {{ __('Projects') }}
+                    </x-nav-link>
+                    @elseif(Auth::user()->role === "manager")
+                    <x-nav-link :href="route('project_list')" :active="request()->routeIs('project_list')">
+                        {{ __('Projects') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('attendance_history')" :active="request()->routeIs('attendance_history')">
+                        {{ __('History') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('document_list')" :active="request()->routeIs('document_list')">
+                        {{ __('Documents') }}
+                    </x-nav-link>
                     @else
                     <x-nav-link :href="route('attendance_history')" :active="request()->routeIs('attendance_history')">
                         {{ __('History') }}

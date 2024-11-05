@@ -6,7 +6,19 @@
     </x-slot>
 
     @if (Auth::user()->role === 'employee')
-        <!-- resources/views/dashboard.blade.php -->
+      
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900 dark:text-gray-100">
+                        Admin Dashboard
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    @else
+
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -52,16 +64,6 @@
                     <button onclick="closePunchModal()"
                         class="px-4 py-2 mr-2 bg-gray-500 text-white rounded-md">Cancel</button>
                     <button onclick="submitPunch()" class="px-4 py-2 bg-blue-500 text-white rounded-md">Submit</button>
-                </div>
-            </div>
-        </div>
-    @else
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900 dark:text-gray-100">
-                        Admin Dashboard
-                    </div>
                 </div>
             </div>
         </div>
