@@ -44,7 +44,7 @@
                     <label for="description" class="block text-gray-700 dark:text-gray-300">Description</label>
                     <input type="text" id="description"
                         class="w-full mt-1 p-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
-                        placeholder="Enter a description">
+                        placeholder="Enter a description" required>
                 </div>
 
                 <!-- Buttons -->

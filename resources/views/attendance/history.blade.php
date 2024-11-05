@@ -31,11 +31,11 @@
                                         </tr>
                                         <tr>
                                             <th class="py-2 px-4">Punch In Description</th>
-                                            <td class="py-2 px-4">{{ $attendance->punch_in_description }}</td>
+                                            <td class="py-2 px-4">{{ $attendance->punch_in_description  }}</td>
                                         </tr>
                                         <tr>
                                             <th class="py-2 px-4">Punch Out Description</th>
-                                            <td class="py-2 px-4">{{ $attendance->punch_out_description }}</td>
+                                            <td class="py-2 px-4">{{ $attendance->punch_out_description ?? "N/A" }}</td>
                                         </tr>
                                         <tr>
                                             <th class="py-2 px-4">Total Time</th>
