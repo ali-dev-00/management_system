@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\User;
@@ -66,7 +67,7 @@ class EmployeeController extends Controller
             'name' => 'nullable|string|max:255',
             'email' => 'nullable|email',
             'password' => 'nullable|min:8',
-            'cnic' => 'nullable|unique:employees,cnic,'. $id,
+            'cnic' => 'nullable|unique:employees,cnic,' . $id,
             'address' => 'nullable',
         ]);
 
@@ -94,5 +95,12 @@ class EmployeeController extends Controller
         $employee = Employee::find($id);
         $employee->delete();
         return redirect()->back()->with('success', 'Employee deleted successfully.');
+    }
+    public function view_attendance_history($user_id)
+    {
+
+        $attendanceHistory = Attendance::where('user_id', $user_id)->get();
+
+        return view('attendance.history', compact('attendanceHistory'));
     }
 }

@@ -45,6 +45,8 @@ Route::middleware('auth')->group(function () {
     Route::post('employees/create', [EmployeeController::class, 'create_employee_form'])->name('create_employee_form');
     Route::put('employees/update/{id}', [EmployeeController::class, 'update_employee_form'])->name('update_employee_form');
     Route::delete('employees/delete/{id}', [EmployeeController::class, 'delete_employee'])->name('delete_employee');
+
+    Route::get('/employee/attendance/{user_id}',[EmployeeController::class,'view_attendance_history'])->name('view_attendance_history');
 });
 
 require __DIR__ . '/auth.php';
