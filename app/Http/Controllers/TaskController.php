@@ -18,18 +18,23 @@ class TaskController extends Controller
             ->where('assigned_by', $user)
             ->get();
             $projects = Project::where('manager_id', $user)->get();
+            $users = User::where('role', 'employee')->get();
         }elseif(Auth::user()->role === 'employee'){
             $user = Auth::user()->id;
-            $tasks = Task::with(['project', 'assignedBy', 'assignedTo']) // Eager load relationships
+            $tasks = Task::with(['project', 'assignedBy', 'assignedTo'])
             ->where('assigned_to', $user)
             ->get();
+            $projects = Project::where('manager_id', $user)->get();
+            $users = User::where('role', 'employee')->get();
         }else{
-            $tasks = Task::with(['project', 'assignedBy', 'assignedTo']) // Eager load relationships
+            $tasks = Task::with(['project', 'assignedBy', 'assignedTo'])
+
             ->get();
             $projects = Project::all();
+            $users = User::where('role', 'employee')->get();
         }
 
-        return view('tasks.tasks_list',compact('tasks','projects'));
+        return view('tasks.tasks_list',compact('tasks','projects' , 'users'));
     }
     public function add_task(Request $request)
     {
@@ -39,23 +44,23 @@ class TaskController extends Controller
             'status' => 'required|string|in:completed,in_progress,not_started',
             'due_date' => 'required|date',
             'assigned_to' => 'required|exists:users,id',
-            'assigned_by' => 'required|exists:users,id',
             'project_id' => 'required|exists:projects,id',
         ]);
 
         $user = Auth::user()->id;
-        $project = new Project();
-        $project->name = $request->name;
-        $project->description = $request->description;
-        $project->due_date = $request->due_date;
-        $project->status = $request->status;
-        $project->assigned_to = $request->assigned_to;
-        $project->assigned_by = $user ;
-        $project->project_id = $request->project_id;
-        $project->save();
+        $task = new Task();
+        $task->name = $request->name;
+        $task->description = $request->description;
+        $task->due_date = $request->due_date;
+        $task->status = $request->status;
+        $task->assigned_to = $request->assigned_to;
+        $task->assigned_by = $user;
+        $task->project_id = $request->project_id;
+        $task->save();
 
-        return redirect()->back()->with('success', 'Project created successfully.');
+        return redirect()->back()->with('success', 'Task created successfully.');
     }
+
 
     public function update_task(Request $request, $id)
     {
@@ -68,19 +73,44 @@ class TaskController extends Controller
             'project_id' => 'nullable|exists:projects,id',
         ]);
 
-        $project = Project::find($id);
-        if (!$project) {
-            return redirect()->back()->withErrors(['project not found.']);
+        $task = Task::find($id);
+        if (!$task) {
+            return redirect()->back()->withErrors(['task not found.']);
         }
 
-        $project->name = $request->name;
-        $project->description = $request->description;
-        $project->due_date = $request->due_date;
-        $project->status = $request->status;
-        $project->assigned_to = $request->assigned_to;
-        $project->project_id = $request->project_id;
-        $project->save();
+        $task->name = $request->name;
+        $task->description = $request->description;
+        $task->due_date = $request->due_date;
+        $task->status = $request->status;
+        $task->assigned_to = $request->assigned_to;
+        $task->project_id = $request->project_id;
+        $task->save();
 
-        return redirect()->back()->with('success', 'Project updated successfully.');
+        return redirect()->back()->with('success', 'Task updated successfully.');
+    }
+    public function update_task_status(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string|in:completed,in_progress,not_started'
+        ]);
+
+        $task = Task::find($id);
+        if (!$task) {
+            return redirect()->back()->withErrors(['task not found.']);
+        }
+
+        // Update only the status
+        $task->status = $request->status;
+        $task->save();
+
+        return redirect()->back()->with('success', 'Task status updated successfully.');
+    }
+
+
+    public function delete_task($id)
+    {
+        $task = Task::find($id);
+        $task->delete();
+        return redirect()->back()->with('success', 'Task deleted successfully.');
     }
 }

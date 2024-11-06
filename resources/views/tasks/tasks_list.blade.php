@@ -2,9 +2,13 @@
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Tasks') }}
+                @if (Auth::user()->role === 'manager' || Auth::user()->role === 'admin')
+                    {{ __('Assign Tasks to Employees') }}
+                @else
+                    Your Tasks
+                @endif
             </h2>
-            @if (Auth::user()->role === 'admin')
+            @if (Auth::user()->role === 'manager' || Auth::user()->role === 'admin')
                 <button class="px-3 py-1 bg-red-700 rounded text-white"
                     onclick="document.getElementById('createDepartmentModal').classList.remove('hidden')">
                     Create Task
@@ -16,14 +20,21 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table id="departmentsTable" class="w-full divide-y divide-gray-700">
+                <div class="p-6 text-gray-900 dark:text-gray-100 overflow-x-auto">
+                    <table id="departmentsTable" class="w-full divide-y divide-gray-700 ">
                         <thead>
                             <tr>
                                 <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     ID</th>
-                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Assigned to</th>
+                                    @if (Auth::user()->role === 'admin')
+                                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Assigned By</th>
+                                    @endif
+                                @if (Auth::user()->role === 'manager' || Auth::user()->role === 'admin')
+                                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Assigned to</th>
+                                @endif
+
                                 <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Project</th>
                                 <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -42,7 +53,12 @@
                             @foreach ($tasks as $task)
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $task->id }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $task->assignedTo->name }}</td>
+                                    @if (Auth::user()->role === 'admin')
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $task->assignedBy->name }}</td>
+                                    @endif
+                                    @if (Auth::user()->role === 'manager' || Auth::user()->role === 'admin')
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $task->assignedTo->name }}</td>
+                                    @endif
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $task->project->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $task->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $task->due_date }}</td>
@@ -51,13 +67,13 @@
 
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <button
-                                            onclick="openUpdateModal({{ $project->id }}, '{{ $project->name }}', '{{ $project->status }}')"
+                                            onclick="openUpdateModal({{ $task->id }}, '{{ $task->name }}', '{{ $task->status }}')"
                                             class="text-blue-600 hover:text-blue-900">
                                             <i class="fa-solid fa-pen-to-square"></i> <!-- Update icon -->
                                         </button>
 
-                                        @if (Auth::user()->role === 'admin')
-                                            <form action="{{ route('delete_project', $project->id) }}" method="POST"
+                                        @if (Auth::user()->role === 'manager' || Auth::user()->role === 'admin')
+                                            <form action="{{ route('delete_task', $task->id) }}" method="POST"
                                                 class="inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -82,39 +98,55 @@
         class="flex fixed inset-0 bg-black bg-opacity-50  items-center justify-center hidden">
         <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-1/3">
             <h2 class="text-lg dark:text-white font-semibold">Create Tasks</h2>
-            <form action="{{ route('add_project') }}" method="POST">
+            <form action="{{ route('add_task') }}" method="POST">
                 @csrf
                 <div class="mt-4">
-                    <x-input-label for="name" :value="__('Tasks Name')" />
+                    <x-input-label for="name" :value="__('Task Name')" />
                     <x-text-input id="name" class="block mt-1 w-full" type="text" name="name"
                         :value="old('name')" required />
                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
                 </div>
+
                 <div class="mt-4">
                     <x-input-label for="due_date" :value="__('Due Date')" />
                     <x-text-input id="due_date" class="block mt-1 w-full" type="date" name="due_date"
                         :value="old('due_date')" required />
                     <x-input-error :messages="$errors->get('due_date')" class="mt-2" />
                 </div>
-               
+
                 <div class="mt-4">
                     <x-input-label for="description" :value="__('Description')" />
                     <x-text-input id="description" class="block mt-1 w-full" type="text" name="description"
                         :value="old('description')" required />
                     <x-input-error :messages="$errors->get('description')" class="mt-2" />
                 </div>
+
                 <div class="mt-4">
-                    <x-input-label for="manager_id" :value="__('Manager')" />
-                    <select name="manager_id" id="manager_id"
+                    <x-input-label for="assigned_to" :value="__('Employee')" />
+                    <select name="assigned_to" id="assigned_to"
                         class="mt-2 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm w-full"
                         required>
-                        <option value="" selected disabled>Select Manager</option>
+                        <option value="" selected disabled>Select Employee</option>
                         @foreach ($users as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
                     </select>
-                    <x-input-error :messages="$errors->get('manager_id')" class="mt-2" />
+                    <x-input-error :messages="$errors->get('assigned_to')" class="mt-2" />
                 </div>
+
+                <div class="mt-4">
+                    <x-input-label for="project_id" :value="__('Project')" />
+                    <select name="project_id" id="project_id"
+                        class="mt-2 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm w-full"
+                        required>
+                        <option value="" selected disabled>Select Project</option>
+                        @foreach ($projects as $project)
+                            <option value="{{ $project->id }}">{{ $project->name }}</option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('project_id')" class="mt-2" />
+                </div>
+
                 <div class="mt-4">
                     <x-input-label for="status" :value="__('Status')" />
                     <select name="status" id="status"
@@ -127,6 +159,10 @@
                     </select>
                     <x-input-error :messages="$errors->get('status')" class="mt-2" />
                 </div>
+
+                <!-- Hidden field for assigned_by -->
+                <input type="hidden" name="assigned_by" value="{{ Auth::user()->id }}">
+
                 <div class="mt-4 flex justify-end">
                     <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-md mr-2"
                         onclick="document.getElementById('createDepartmentModal').classList.add('hidden')">Cancel</button>
@@ -140,14 +176,14 @@
     <div id="updateDepartmentModal"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-1/3">
-            <h2 class="text-lg dark:text-white font-semibold">Update Project Status</h2>
+            <h2 class="text-lg dark:text-white font-semibold">Update Task Status</h2>
             <form id="updateDepartmentForm" method="POST">
                 @csrf
                 @method('PUT')
-                <input type="hidden" class="text-black" name="id" id="updateDepartmentId">
+                <input type="hidden" class="text-black" name="id" id="update_task_id">
                 <div class="mt-4">
                     <x-input-label for="status" :value="__('Status')" />
-                    <select name="status" id="status"
+                    <select name="status" id="update_status"
                         class="mt-2 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm w-full"
                         required>
                         <option value="" selected disabled>Select Status</option>
@@ -182,9 +218,9 @@
 
             function openUpdateModal(id, name, status) {
                 document.getElementById('updateDepartmentModal').classList.remove('hidden');
-                document.getElementById('updateDepartmentId').value = id;
-                document.getElementById('status').value = status;
-                document.getElementById('updateDepartmentForm').action = `/projects/update/status/${id}`;
+                document.getElementById('update_task_id').value = id;
+                document.getElementById('update_status').value = status;
+                document.getElementById('updateDepartmentForm').action = `/tasks/update/status/${id}`;
             }
         </script>
     @endpush

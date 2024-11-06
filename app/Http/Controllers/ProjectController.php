@@ -99,4 +99,9 @@ class ProjectController extends Controller
         $project->delete();
         return redirect()->back()->with('success', 'project deleted successfully.');
     }
+    public function show_project_tasks($id)
+    {
+        $project = Project::with('tasks')->findOrFail($id);
+        return view('projects.project_tasks', compact('project'));
+    }
 }

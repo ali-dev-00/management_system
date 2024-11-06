@@ -2,7 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Projects') }}
+                @if (Auth::user()->role === 'admin')
+                Assign Projects to Project Managers
+                @else
+                 Your Projects
+                @endif
             </h2>
             @if (Auth::user()->role === 'admin')
                 <button class="px-3 py-1 bg-red-700 rounded text-white"
@@ -22,10 +26,12 @@
                             <tr>
                                 <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     ID</th>
+                                @if (Auth::user()->role === 'admin')
+                                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                      Project Manager</th>
+                                @endif
                                 <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Manager</th>
-                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Name</th>
+                                    Project Name</th>
                                 <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Start Date</th>
                                 <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -42,8 +48,12 @@
                             @foreach ($projects as $project)
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $project->id }}</td>
+                                    @if (Auth::user()->role === 'admin')
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $project->user->name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $project->name }}</td>
+                                    @endif
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <a href="{{ route('show_project_tasks', $project->id) }}" class="text-blue-500 hover:underline">{{ $project->name }}</a>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $project->start_date }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $project->end_date }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $project->description }}</td>
@@ -152,7 +162,7 @@
                 <input type="hidden" class="text-black" name="id" id="updateDepartmentId">
                 <div class="mt-4">
                     <x-input-label for="status" :value="__('Status')" />
-                    <select name="status" id="status"
+                    <select name="status" id="update_status"
                         class="mt-2 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm w-full"
                         required>
                         <option value="" selected disabled>Select Status</option>
@@ -189,7 +199,7 @@
                 document.getElementById('updateDepartmentModal').classList.remove('hidden');
                 document.getElementById('updateDepartmentId').value = id;
 
-                document.getElementById('status').value = status;
+                document.getElementById('update_status').value = status;
                 document.getElementById('updateDepartmentForm').action = `/projects/update/status/${id}`;
             }
         </script>

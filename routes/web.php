@@ -6,6 +6,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,6 +53,13 @@ Route::middleware('auth')->group(function () {
     Route::put('projects/update/{id}', [ProjectController::class, 'update_project'])->name('update_project');
     Route::put('projects/update/status/{id}', [ProjectController::class, 'update_project_status'])->name('update_project_status');
     Route::delete('projects/delete/{id}', [ProjectController::class, 'delete_project'])->name('delete_project');
+    Route::get('/projects/{id}/tasks', [ProjectController::class, 'show_project_tasks'])->name('show_project_tasks');
+    //tasks
+    Route::get('tasks', [TaskController::class, 'task_list'])->name('task_list');
+    Route::post('tasks/create', [TaskController::class, 'add_task'])->name('add_task');
+    Route::put('tasks/update/{id}', [TaskController::class, 'update_task'])->name('update_task');
+    Route::put('tasks/update/status/{id}', [TaskController::class, 'update_task_status'])->name('update_task_status');
+    Route::delete('tasks/delete/{id}', [TaskController::class, 'delete_task'])->name('delete_task');
 
 
     //employees
