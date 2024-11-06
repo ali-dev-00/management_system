@@ -16,11 +16,8 @@
                 </div>
             </div>
         </div>
-
     @else
-
-
-        <div class="py-12">
+        <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-4 items-center flex justify-between text-gray-900 dark:text-gray-100">
@@ -69,7 +66,27 @@
         </div>
     @endif
 
+    @if (Auth::user()->role === 'employee')
+    <div class="py-4">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            <div class="flex justify-between ">
+                <h3 class="text-xl font-bold text-white">Performance Evaluation Chart</h3>
+            </div>
+            <div class="mt-4 bg-gray-800 p-2 rounded-lg shadow-lg w-full max-w-[600px] h-[300px] overflow-auto">
+                <canvas id="performanceChart"></canvas>
+            </div>
+
+
+        </div>
+    </div>
+    @endif
+
+
+
+
     @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             function openPunchModal(type) {
                 const modalTitle = document.getElementById('modalTitle');
@@ -107,6 +124,79 @@
                         window.location.reload();
                     })
                     .catch(error => console.error('Error:', error));
+            }
+
+
+            const taskNames = @json($taskNames);
+            const scores = @json($scores);
+            const createdAt = @json($createdAt);
+            const comments = @json($comments);
+
+            if (scores.length > 0 && createdAt.length > 0) {
+                // Create the chart
+                const ctx = document.getElementById('performanceChart').getContext('2d');
+                const performanceChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: createdAt, // Use createdAt for X-axis labels
+                        datasets: [{
+                            label: 'Performance Score',
+                            data: scores, // Performance scores for each task
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)', // Line color (transparent)
+                            borderColor: 'rgba(54, 162, 235, 1)', // Line border color
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(54, 162, 235, 1)', // Point color
+                            pointBorderColor: 'rgba(54, 162, 235, 1)', // Point border color
+                            pointRadius: 5, // Point size
+                            fill: false, // No fill under the line
+                            tension: 0.2, // Smooth line
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                type: 'category', // X-axis uses the `created_at` as categories
+                                labels: createdAt, // This ensures the createdAt dates are shown on X-axis
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 10, // Maximum score is 10 (you can adjust this based on your score range)
+                                ticks: {
+                                    stepSize: 1, // Step size for Y-axis (e.g., 1 per score)
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        family: 'Arial', // Font for the legend
+                                        size: 14, // Font size for the legend
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    // Customize the tooltip to show only score and comment
+                                    title: function() {
+                                        return ''; // Avoid showing the title (created_at)
+                                    },
+                                    label: function(tooltipItem) {
+                                        const score = scores[tooltipItem.dataIndex];
+                                        const comment = comments[tooltipItem.dataIndex];
+                                        return `Score: ${score}, Comment: ${comment || 'No comment'}`; // Show score and comment
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                // If no data is available, display a message instead of the chart
+                const chartContainer = document.getElementById('performanceChart').parentElement;
+                chartContainer.innerHTML = '<p class="text-white text-center mt-10">No Performance Data Available</p>';
             }
         </script>
     @endpush

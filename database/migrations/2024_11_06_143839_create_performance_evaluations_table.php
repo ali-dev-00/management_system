@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('task_id')->constrained('tasks')->onDelete('cascade');
             $table->foreignId('manager_id')->constrained('users');
+            $table->foreignId('employee_id')->constrained('users');
             $table->string('score');
             $table->text('comments')->nullable();
             $table->timestamps();

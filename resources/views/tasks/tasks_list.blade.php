@@ -26,10 +26,10 @@
                             <tr>
                                 <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     ID</th>
-                                    @if (Auth::user()->role === 'admin')
+                                @if (Auth::user()->role === 'admin')
                                     <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Assigned By</th>
-                                    @endif
+                                @endif
                                 @if (Auth::user()->role === 'manager' || Auth::user()->role === 'admin')
                                     <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Assigned to</th>
@@ -54,7 +54,7 @@
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $task->id }}</td>
                                     @if (Auth::user()->role === 'admin')
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $task->assignedBy->name }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $task->assignedBy->name }}</td>
                                     @endif
                                     @if (Auth::user()->role === 'manager' || Auth::user()->role === 'admin')
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $task->assignedTo->name }}</td>
@@ -81,6 +81,12 @@
                                                     <i class="fa-solid fa-trash"></i> <!-- Delete icon -->
                                                 </button>
                                             </form>
+
+                                            <button
+                                                onclick="openEvaluationModal({{ $task->id }}, {{ $task->assigned_to }})"
+                                                class="text-green-600 hover:text-green-900 ms-4">
+                                                <i class="fa-solid fa-star"></i> <!-- Performance Evaluation icon -->
+                                            </button>
                                         @endif
                                     </td>
 
@@ -173,6 +179,54 @@
     </div>
 
 
+    <!-- Performance Evaluation Modal -->
+    <div id="evaluationModal" class="flex fixed inset-0 bg-black bg-opacity-50  items-center justify-center hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-1/3">
+            <h2 class="text-lg dark:text-white font-semibold">Performance Evaluation</h2>
+            <form id="evaluationForm" action="{{ route('add_performance') }}" method="POST">
+                @csrf
+                <input type="hidden" name="task_id" id="evaluationTaskId">
+                <input type="hidden" name="employee_id" id="evaluationEmployeeId">
+                <div class="mt-4">
+                    <x-input-label for="score" :value="__('Score')" />
+
+                    <div class="flex items-center gap-3 ">
+
+                        <button type="button" onclick="decrementScore()"
+                            class="px-2 py-1 bg-gray-300 text-gray-800 rounded-l">
+                            -
+                        </button>
+
+                        <x-text-input id="score" class="block w-16 text-center border-gray-300" type="number"
+                            name="score" :value="old('score', 1)" min="1" max="10" readonly required />
+                        <button type="button" onclick="incrementScore()"
+                            class="px-2 py-1 bg-gray-300 text-gray-800 rounded-r">
+                            +
+                        </button>
+                    </div>
+
+                    <x-input-error :messages="$errors->get('score')" class="mt-2" />
+                </div>
+
+
+                <div class="mt-4">
+                    <x-input-label for="comments" :value="__('Comments')" />
+                    <x-text-input id="comments" class="block mt-1 w-full" type="text" name="comments"
+                        :value="old('comments')" required />
+                    <x-input-error :messages="$errors->get('comments')" class="mt-2" />
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button type="button" onclick="closeEvaluationModal()"
+                        class="px-4 py-2 bg-gray-500 text-white rounded mr-2">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Submit Evaluation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
     <div id="updateDepartmentModal"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-1/3">
@@ -221,6 +275,32 @@
                 document.getElementById('update_task_id').value = id;
                 document.getElementById('update_status').value = status;
                 document.getElementById('updateDepartmentForm').action = `/tasks/update/status/${id}`;
+            }
+
+            function openEvaluationModal(taskId, employeeId) {
+                document.getElementById('evaluationTaskId').value = taskId;
+                document.getElementById('evaluationEmployeeId').value = employeeId;
+                document.getElementById('evaluationModal').classList.remove('hidden');
+            }
+
+            function closeEvaluationModal() {
+                document.getElementById('evaluationModal').classList.add('hidden');
+            }
+
+            function incrementScore() {
+                let scoreInput = document.getElementById('score');
+                let currentValue = parseInt(scoreInput.value);
+                if (currentValue < 10) {
+                    scoreInput.value = currentValue + 1;
+                }
+            }
+
+            function decrementScore() {
+                let scoreInput = document.getElementById('score');
+                let currentValue = parseInt(scoreInput.value);
+                if (currentValue > 1) {
+                    scoreInput.value = currentValue - 1;
+                }
             }
         </script>
     @endpush

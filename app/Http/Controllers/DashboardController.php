@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\Document;
+use App\Models\PerformanceEvaluation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,12 +16,24 @@ class DashboardController extends Controller
         $user = Auth::user()->id;
         $today = Carbon::today();
 
-        // Get today's attendance record for the user
         $attendance = Attendance::where('user_id', $user)
             ->whereDate('punch_in', $today)
             ->first();
 
-        return view('dashboard', compact('attendance'));
+        $performanceEvaluations = PerformanceEvaluation::where('employee_id', $user)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+
+
+        $taskNames = $performanceEvaluations->pluck('task.name');
+        $scores = $performanceEvaluations->pluck('score');
+        $createdAt = $performanceEvaluations->pluck('created_at')->map(function ($date) {
+            return Carbon::parse($date)->format('Y-m-d');
+        });
+        $comments = $performanceEvaluations->pluck('comments');
+
+        return view('dashboard', compact('attendance', 'taskNames', 'scores', 'createdAt','comments'));
     }
 
 
@@ -58,11 +71,9 @@ class DashboardController extends Controller
     {
         $userId = Auth::id(); // Get the logged-in user's ID
         $attendanceHistory = Attendance::where('user_id', $userId)
-                                        ->orderBy('punch_in', 'desc')
-                                        ->get();
+            ->orderBy('punch_in', 'desc')
+            ->get();
 
         return view('attendance.history', compact('attendanceHistory'));
     }
-
-
 }

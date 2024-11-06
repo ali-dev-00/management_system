@@ -24,4 +24,10 @@ class Employee extends Model
     {
         return $this->belongsTo(Department::class);
     }
+
+   
+    public function performanceEvaluations()
+    {
+        return $this->hasMany(PerformanceEvaluation::class, 'employee_id');
+    }
 }

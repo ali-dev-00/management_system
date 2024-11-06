@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\PerformanceEvluation;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
@@ -54,7 +55,10 @@ Route::middleware('auth')->group(function () {
     Route::put('projects/update/status/{id}', [ProjectController::class, 'update_project_status'])->name('update_project_status');
     Route::delete('projects/delete/{id}', [ProjectController::class, 'delete_project'])->name('delete_project');
     Route::get('/projects/{id}/tasks', [ProjectController::class, 'show_project_tasks'])->name('show_project_tasks');
+
+
     //tasks
+    Route::post('/tasks/performance',[PerformanceEvluation::class,'add_performance'])->name('add_performance');
     Route::get('tasks', [TaskController::class, 'task_list'])->name('task_list');
     Route::post('tasks/create', [TaskController::class, 'add_task'])->name('add_task');
     Route::put('tasks/update/{id}', [TaskController::class, 'update_task'])->name('update_task');
